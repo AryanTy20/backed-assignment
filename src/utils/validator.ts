@@ -10,3 +10,9 @@ export const registerValidator = joi.object({
   role: joi.string().valid("admin", "user").required(),
   department: joi.string().max(50),
 });
+
+export const loginValidator = joi.object({
+  email: joi.string().min(3).email().required(),
+  password: joi.string().min(6).max(20).required(),
+  remember: joi.boolean(),
+});
