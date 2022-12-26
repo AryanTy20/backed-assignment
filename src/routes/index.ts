@@ -20,4 +20,7 @@ router.patch("/update/:id", Auth, Controller.update);
 /* This is a route that will be used to view a user's information. */
 router.get("/view/:id?", Auth, Controller.view);
 
+/* This is a route that will be used to add a user's information. By Super admin and user */
+router.post("/add", Auth, Controller.add);
+
 export default router;
