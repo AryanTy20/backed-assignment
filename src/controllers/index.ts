@@ -212,4 +212,23 @@ export const Controller = {
       return next(err);
     }
   },
+
+  /* super admin and user can add users */
+  async add(req: Request, res: Response, next: NextFunction) {
+    const { error } = userValidator.validate(req.body);
+    if (error) return next(CustomError(422, error.message));
+    const { role } = req.user;
+    const { password, confirm_password, email, ...rest } = req.body;
+    try {
+      if (req.body.role === "admin" && role === "user")
+        return next(CustomError(403, "not proper access"));
+      const exist = await UserModel.exists({ email });
+      if (exist) return next(CustomError(409, "user with email already exist"));
+      const hash = hashedPassword(password);
+      await UserModel.create({ ...rest, email, password: hash });
+      res.sendStatus(201);
+    } catch (err) {
+      return next(err);
+    }
+  },
 };
