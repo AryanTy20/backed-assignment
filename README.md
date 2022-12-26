@@ -1,7 +1,7 @@
 # backed-assignment
-
+"\n"
 #To Run Project Run command
- 1 yarn install
+ 1 yarn install "\n"
  2 yarn dev to run in dev
  3 install typescript 
  4 run yarn build  to make build
