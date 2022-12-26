@@ -165,4 +165,51 @@ export const Controller = {
       return next(err);
     }
   },
+
+  /*  Role specific view of data if id given id data sent */
+  async view(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+
+    /* user role */
+    const { role } = req.user;
+
+    /* validating user id */
+    if (id) {
+      const validId = mongoose.Types.ObjectId.isValid(id);
+      if (!validId) return next(CustomError(400, "invalid id"));
+    }
+    /* Admin access Data */
+    const getAdminAccessData = async () => {
+      if (id) {
+        const user = await UserModel.findById({ _id: id }).select(
+          "-password -__v"
+        );
+        !user ? res.json("No Data Found") : res.json(user);
+      } else {
+        const users = await UserModel.find({}).select("-password -__v");
+        users.length == 0 ? res.json("No Data found") : res.json(users);
+      }
+    };
+
+    /* User access Data  */
+    const getUserAcessData = async () => {
+      if (id) {
+        const user = await UserModel.findOne({ _id: id, role: "user" }).select(
+          "-password -__v"
+        );
+        !user ? res.json("No Data found") : res.json(user);
+      } else {
+        const users = await UserModel.find({ role: "user" }).select(
+          "-password -__v"
+        );
+        users.length == 0 ? res.json("No Data found") : res.json(users);
+      }
+    };
+
+    try {
+      role === "admin" ? getAdminAccessData() : getUserAcessData();
+    } catch (err) {
+      return next(err);
+    }
+  },
 };
