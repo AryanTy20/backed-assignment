@@ -17,4 +17,7 @@ router.get("/refresh", Auth, Controller.refresh);
 /* This is a route that will be used to update a user's information. */
 router.patch("/update/:id", Auth, Controller.update);
 
+/* This is a route that will be used to view a user's information. */
+router.get("/view/:id?", Auth, Controller.view);
+
 export default router;
