@@ -12,8 +12,11 @@ app.use(
 );
 
 // * custom imports *//
-import { ExtendedError } from "./utils";
+import { ExtendedError, DbConnect } from "./utils";
 import { AdminRoutes } from "./routes";
+
+// * Database connect *//
+DbConnect();
 
 // * route to show api running *//
 app.get("/", (req: Request, res: Response, next: NextFunction) =>
