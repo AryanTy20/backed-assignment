@@ -6,9 +6,11 @@ import {
   hashedPassword,
   JWTService,
   loginValidator,
+  updateValidator,
 } from "../utils";
 import UserModel from "../model";
 import Refreshtoken from "../model/refreshtoken";
+import mongoose from "mongoose";
 
 export const Controller = {
   /* register Super Admin and User */
@@ -119,6 +121,48 @@ export const Controller = {
       res.json({ token, user: user?.first_name, role });
     } catch (error) {
       return next(error);
+    }
+  },
+
+  /* Admin and user can update data */
+  async update(req: Request, res: Response, next: NextFunction) {
+    /* Checking if the id is present in the request params. */
+    const { id } = req.params;
+    if (!id) return next(CustomError(400, "id is rqeuired"));
+
+    /* validating req.body */
+    const { error } = updateValidator.validate(req.body);
+    if (error) return next(CustomError(422, error.message));
+
+    /* auth role */
+    const { role } = req.user;
+    try {
+      /* validating user id */
+      const validId = mongoose.Types.ObjectId.isValid(id);
+      if (!validId) return next(CustomError(400, "invalid id"));
+
+      /* user data for role check */
+      const user = await UserModel.findById({ _id: id });
+      if (!user) return next(CustomError(404, "user not found"));
+      const dataRoleType = user?.role === "admin" ? "admin" : "user";
+
+      /* check proper access for update */
+      if (dataRoleType === "admin" && role === "user")
+        return next(CustomError(403, "not proper access"));
+
+      const updatedData = await UserModel.findByIdAndUpdate(
+        id,
+        {
+          $set: {
+            ...req.body,
+          },
+        },
+        { new: true }
+      ).select("-__v -createdAt -updatedAt -password -_id");
+
+      res.json(updatedData);
+    } catch (err) {
+      return next(err);
     }
   },
 };
