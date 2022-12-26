@@ -14,4 +14,7 @@ router.get("/logout", Auth, Controller.logout);
 /* This is a route that will be used to refresh a user's token. */
 router.get("/refresh", Auth, Controller.refresh);
 
+/* This is a route that will be used to update a user's information. */
+router.patch("/update/:id", Auth, Controller.update);
+
 export default router;
