@@ -11,6 +11,7 @@ import UserModel from "../model";
 import Refreshtoken from "../model/refreshtoken";
 
 export const Controller = {
+  /* register Super Admin and User */
   async register(req: Request, res: Response, next: NextFunction) {
     const { error } = userValidator.validate(req.body);
     if (error) return next(CustomError(422, error.message));
@@ -25,6 +26,8 @@ export const Controller = {
         _id: String(user._id),
         role: user.role,
       });
+      const existToken = await Refreshtoken.exists({ token: refreshToken });
+      if (!existToken) await Refreshtoken.create({ token: refreshToken });
       res.cookie("refresh", refreshToken, {
         maxAge: 604800000,
         sameSite: "none",
