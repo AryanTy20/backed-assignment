@@ -1,7 +1,7 @@
 import { DbConnect } from "./Database";
 import { CustomError, ExtendedError } from "./error";
 import { JWTService } from "./jwt";
-import { userValidator, loginValidator } from "./validator";
+import { userValidator, loginValidator, updateValidator } from "./validator";
 import { hashedPassword } from "./passwordEncrypt";
 
 export {
@@ -11,5 +11,6 @@ export {
   JWTService,
   userValidator,
   loginValidator,
+  updateValidator,
   hashedPassword,
 };
