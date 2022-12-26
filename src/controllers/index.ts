@@ -76,6 +76,7 @@ export const Controller = {
     }
   },
 
+  /* logout user */
   async logout(req: Request, res: Response, next: NextFunction) {
     try {
       const { refresh } = req.cookies;
