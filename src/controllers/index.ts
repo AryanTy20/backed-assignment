@@ -39,6 +39,7 @@ export const Controller = {
       return next(err);
     }
   },
+  /* login user */
   async login(req: Request, res: Response, next: NextFunction) {
     const { error } = loginValidator.validate(req.body);
     if (error) return next(CustomError(422, error.message));
@@ -47,12 +48,14 @@ export const Controller = {
       const user = await UserModel.findOne({ email });
       if (!user) return next(CustomError(401, "wrong credential"));
       const invalidPassword = bcrypt.compareSync(password, user.password);
-      if (invalidPassword) return next(CustomError(401, "wrong credential"));
+      if (!invalidPassword) return next(CustomError(401, "wrong credential"));
       const token = JWTService.sign({ _id: String(user._id), role: user.role });
       const refreshToken = JWTService.refresh({
         _id: String(user._id),
         role: user.role,
       });
+      const existToken = await Refreshtoken.exists({ token: refreshToken });
+      if (!existToken) await Refreshtoken.create({ token: refreshToken });
       res.cookie("refresh", refreshToken, {
         ...(remember === true && {
           maxAge: remember ? 604800000 : 86400000,
@@ -70,6 +73,7 @@ export const Controller = {
       return next(err);
     }
   },
+
   async logout(req: Request, res: Response, next: NextFunction) {
     try {
       const { refresh } = req.cookies;
