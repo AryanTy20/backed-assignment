@@ -100,4 +100,25 @@ export const Controller = {
       return next(err);
     }
   },
+  /* refresh accesstoken with help of refreshtoken  from cookie */
+  async refresh(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { refresh } = req.cookies;
+      if (!refresh) return next(CustomError(401, "unauthorized"));
+      const tokenExist = await Refreshtoken.exists({ token: refresh });
+      if (!tokenExist) return next(CustomError(401, "unauthorized"));
+      const { _id, role } = JWTService.refresh_v(refresh) as {
+        _id: string;
+        role: string;
+      };
+      const user = await UserModel.findById({ _id });
+      const token = JWTService.sign({
+        _id,
+        role,
+      });
+      res.json({ token, user: user?.first_name, role });
+    } catch (error) {
+      return next(error);
+    }
+  },
 };
