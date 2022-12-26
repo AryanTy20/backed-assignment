@@ -8,6 +8,7 @@ import {
   loginValidator,
 } from "../utils";
 import UserModel from "../model";
+import Refreshtoken from "../model/refreshtoken";
 
 export const Controller = {
   async register(req: Request, res: Response, next: NextFunction) {
@@ -62,6 +63,32 @@ export const Controller = {
         role: user.role,
         token,
       });
+    } catch (err) {
+      return next(err);
+    }
+  },
+  async logout(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { refresh } = req.cookies;
+      if (!refresh) return res.sendStatus(204);
+      const userfound = await Refreshtoken.exists({ token: refresh });
+      if (!userfound) {
+        res.clearCookie("refresh", {
+          maxAge: 0,
+          sameSite: "none",
+          secure: true,
+          httpOnly: true,
+        });
+        return res.sendStatus(403);
+      }
+      await Refreshtoken.findOneAndDelete({ token: refresh });
+      res.clearCookie("refresh", {
+        maxAge: 0,
+        sameSite: "none",
+        secure: true,
+        httpOnly: true,
+      });
+      res.sendStatus(204);
     } catch (err) {
       return next(err);
     }
