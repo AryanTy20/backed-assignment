@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response } from "express";
+import bcrypt from "bcrypt";
 import {
   CustomError,
   registerValidator,
   hashedPassword,
   JWTService,
+  loginValidator,
 } from "../utils";
 import UserModel from "../model";
 
@@ -29,6 +31,37 @@ export const Controller = {
         httpOnly: true,
       });
       res.status(201).json({ user: user.first_name, role: user.role, token });
+    } catch (err) {
+      return next(err);
+    }
+  },
+  async login(req: Request, res: Response, next: NextFunction) {
+    const { error } = loginValidator.validate(req.body);
+    if (error) return next(CustomError(422, error.message));
+    const { remember, email, password } = req.body;
+    try {
+      const user = await UserModel.findOne({ email });
+      if (!user) return next(CustomError(401, "wrong credential"));
+      const invalidPassword = bcrypt.compareSync(password, user.password);
+      if (invalidPassword) return next(CustomError(401, "wrong credential"));
+      const token = JWTService.sign({ _id: String(user._id), role: user.role });
+      const refreshToken = JWTService.refresh({
+        _id: String(user._id),
+        role: user.role,
+      });
+      res.cookie("refresh", refreshToken, {
+        ...(remember === true && {
+          maxAge: remember ? 604800000 : 86400000,
+        }),
+        sameSite: "none",
+        secure: true,
+        httpOnly: true,
+      });
+      res.json({
+        user: user.first_name,
+        role: user.role,
+        token,
+      });
     } catch (err) {
       return next(err);
     }
