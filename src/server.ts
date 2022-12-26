@@ -11,13 +11,19 @@ app.use(
   })
 );
 
+// * custom imports *//
+import { ExtendedError } from "./utils";
+import { AdminRoutes } from "./routes";
+
 // * route to show api running *//
 app.get("/", (req: Request, res: Response, next: NextFunction) =>
   res.json("api running 🚀")
 );
 
+// * Admin routes * //
+app.use("/admin", AdminRoutes);
+
 // * Route for Error Handling *//
-import { ExtendedError } from "./utils/error";
 app.use(
   (err: ExtendedError, req: Request, res: Response, next: NextFunction) => {
     const status = err.status || 500;
