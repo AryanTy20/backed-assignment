@@ -10,7 +10,7 @@ type PayloadType = {
 export class JWTService {
   static sign(
     payload: PayloadType,
-    expires = "60s",
+    expires = "300s",
     secretkey = SIGN_TOKEN as string
   ) {
     return jwt.sign(payload, secretkey, {
