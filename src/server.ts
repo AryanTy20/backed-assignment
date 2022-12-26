@@ -15,7 +15,7 @@ app.use(cookie());
 
 // * custom imports *//
 import { ExtendedError, DbConnect } from "./utils";
-import { AdminRoutes } from "./routes";
+import UserRoutes from "./routes";
 
 // * Database connect *//
 DbConnect();
@@ -26,7 +26,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) =>
 );
 
 // * Admin routes * //
-app.use("/admin", AdminRoutes);
+app.use("/api", UserRoutes);
 
 // * Route for Error Handling *//
 app.use(
