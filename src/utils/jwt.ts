@@ -6,25 +6,27 @@ type PayloadType = {
   _id: string;
 };
 
-class JWTService {
-  static sign(payload: PayloadType, expires = "60s", secretkey = SIGN_TOKEN) {
+export class JWTService {
+  static sign(
+    payload: PayloadType,
+    expires = "60s",
+    secretkey = SIGN_TOKEN as string
+  ) {
     return jwt.sign(payload, secretkey, {
       expiresIn: expires,
     });
   }
-  static sign_v(payload: string, secretkey = SIGN_TOKEN) {
+  static sign_v(payload: string, secretkey = SIGN_TOKEN as string) {
     return jwt.verify(payload, secretkey);
   }
   static refresh(
     payload: PayloadType,
     expires = "7d",
-    secretkey = REFRESH_TOKEN
+    secretkey = REFRESH_TOKEN as string
   ) {
     return jwt.sign(payload, secretkey, { expiresIn: expires });
   }
-  static refresh_v(payload: string, secretkey = REFRESH_TOKEN) {
+  static refresh_v(payload: string, secretkey = REFRESH_TOKEN as string) {
     return jwt.verify(payload, secretkey);
   }
 }
-
-export default JWTService;
