@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 import { DB_URL } from "../config";
 
+/**
+ * It connects to the database using the DB_URL constant
+ */
 export const DbConnect = async () => {
   mongoose
     .connect(DB_URL as string)

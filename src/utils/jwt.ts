@@ -6,6 +6,7 @@ type PayloadType = {
   _id: string;
 };
 
+/* It's a class that has static methods that sign and verify JWT tokens */
 export class JWTService {
   static sign(
     payload: PayloadType,
