@@ -1,5 +1,6 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
+import cookie from "cookie-parser";
 
 const app: Application = express();
 app.use(express.json());
@@ -10,6 +11,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(cookie());
 
 // * custom imports *//
 import { ExtendedError, DbConnect } from "./utils";
