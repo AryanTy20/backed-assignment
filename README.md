@@ -1,14 +1,18 @@
 # backed-assignment
-"\n"
-#To Run Project Run command
- 1 yarn install "\n"
- 2 yarn dev to run in dev
- 3 install typescript 
- 4 run yarn build  to make build
- 5 yarn start to run from built folder
 
-#server running on port 5000
-BASE_URL="http://localhost:5000/api
+
+To Run Project Run command
+ * yarn install "\n"
+ * yarn dev to run in dev
+ * install typescript 
+ * run yarn build  to make build
+ * yarn start to run from built folder
+
+
+server running on port 5000
+
+
+BASE_URL = "http://localhost:5000/api
 
 Routes:
 * "/register" - Register Route to create first user and admin .
