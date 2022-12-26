@@ -16,3 +16,12 @@ export const loginValidator = joi.object({
   password: joi.string().min(6).max(20).required(),
   remember: joi.boolean(),
 });
+
+export const updateValidator = joi.object({
+  first_name: joi.string().min(3).max(20),
+  middle_name: joi.string().min(3).max(20),
+  last_name: joi.string().min(3).max(20),
+  email: joi.string().min(3).email(),
+  role: joi.string().valid("admin", "user"),
+  department: joi.string().max(50),
+});
