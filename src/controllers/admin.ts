@@ -11,10 +11,12 @@ export const AdminController = {
   async register(req: Request, res: Response, next: NextFunction) {
     const { error } = registerValidator.validate(req.body);
     if (error) return next(CustomError(422, error.message));
-    const { password, confirm_password, ...rest } = req.body;
+    const { password, confirm_password, email, ...rest } = req.body;
     try {
+      const exist = await UserModel.exists({ email });
+      if (exist) return next(CustomError(409, "user with email already exist"));
       const hash = hashedPassword(password);
-      const user = await UserModel.create({ ...rest, password: hash });
+      const user = await UserModel.create({ ...rest, email, password: hash });
       const token = JWTService.sign({ _id: String(user._id), role: user.role });
       const refreshToken = JWTService.refresh({
         _id: String(user._id),
