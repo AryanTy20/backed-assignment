@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import {
   CustomError,
-  registerValidator,
+  userValidator,
   hashedPassword,
   JWTService,
   loginValidator,
@@ -12,7 +12,7 @@ import Refreshtoken from "../model/refreshtoken";
 
 export const Controller = {
   async register(req: Request, res: Response, next: NextFunction) {
-    const { error } = registerValidator.validate(req.body);
+    const { error } = userValidator.validate(req.body);
     if (error) return next(CustomError(422, error.message));
     const { password, confirm_password, email, ...rest } = req.body;
     try {
